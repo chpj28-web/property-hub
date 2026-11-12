@@ -32,10 +32,18 @@ function extractProjectName(text) {
       .split(/\s*(?:[,|•🔹🔸✅📍💰✨🏡]|\b(?:for\s+rent|for\s+sale|rent|rental|price|size|studio|bedrooms?|bathrooms?|tel|line\s*id)\b|(?:ราคา(?:เช่า|ขาย)?|ค่าเช่า|ให้เช่า|ปล่อยเช่า|ขนาด|พื้นที่|ห้องนอน|ห้องน้ำ|ชั้น|ติดต่อ|โทร|พร้อมเข้า|เฟอร์|วิว|ใกล้|ติด\s*(?:BTS|MRT))|\d+(?:[,.]\d+)*\s*(?:k\b|บาท|฿|THB|ตร\.?\s*ม\.?|sqm|ห้องนอน|ห้องน้ำ|bed|bath|br\b|\/เดือน))\s*/i)[0]
       .replace(/^#+/,'').replace(/_/g,' ').replace(/[\s:：\-–—]+$/,'').trim();
   }
-  const usable=name=>name.length>=3&&name.length<=100&&!/^(?:ให้เช่า|เช่า|ขาย|ห้อง|พร้อม|สวย|ด่วน|ราคาถูก|ติด\s*(?:BTS|MRT)|for\s+rent|for\s+sale|near\b)/i.test(name)&&!/^[-\d,. ]+$/.test(name);
+  const usable=name=>name.length>=3&&name.length<=100&&!/^(?:ให้เช่า|เช่า|ขาย|ห้อง|พร้อม|สวย|ด่วน|ราคาถูก|ติด\s*(?:BTS|MRT)|for\s+rent|for\s+sale|near\b|\(?CCTV\b|กล้อง|สิ่งอำนวย|สถานที่|มีวิน|ไม่ต้อง|Owner\b)/i.test(name)&&!/^[-\d,. ]+$/.test(name);
   for(const line of lines) {
-    const m=line.match(/(?:ชื่อโครงการ|ชื่อคอนโด|ชื่อหมู่บ้าน|โครงการ|\bproject(?:\s+name)?\b|\bcondo\s+name\b)\s*[:：=\-]?\s*(.+)/i);
+    const m=line.match(/(?:ชื่อโครงการ|ชื่อคอนโด|ชื่อหมู่บ้าน|\bproject\s+name\b|\bcondo\s+name\b)\s*[:：=\-]?\s*(.+)/i)||line.match(/(?:^|[\n|•])\s*(?:โครงการ|project)\s*[:：=\-]?\s*(.+)/i)||line.match(/(?:โครงการ|\bproject\b)\s*[:：=]\s*(.+)/i);
     if(m){const name=clean(m[1]);if(usable(name))return name;}
+  }
+
+  // A building marker or known project name is stronger than generic condo wording.
+  for(const line of lines.slice(0,6)) {
+    const building=line.match(/🏢\s*([^🏢📍📣🚝✅❤️📌💰✨🏡\n]+)/u);
+    if(building){const name=clean(building[1]);if(usable(name))return name;}
+    const regent=line.match(/(?:รีเจ้นท์\s*โฮม|รีเจ้นท์โฮม|รีเจนท์\s*โฮม|รีเจ้น\s*โฮม|regent\s+home)\s*[-–]?\s*[^📍✅❤️📌💰✨🏡\n]*/i);
+    if(regent){const name=clean(regent[0]);if(usable(name))return name;}
   }
   for(const line of lines.slice(0,6)) {
     // A rental heading takes precedence over a property type inside the name.
