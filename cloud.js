@@ -11,7 +11,7 @@ window.cloud = (() => {
       if (typeof id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(id) || ids.has(id)) throw new Error('รหัส Listing ไม่ถูกต้องหรือซ้ำกัน');
       ids.add(id);
       const clean = { id };
-      for (const key of ['project','location','type','rent','sale','size','beds','baths','floor','available','received','contact','phone','line','source','status','link','notes']) {
+      for (const key of ['project','location','type','rent','sale','size','roomType','beds','baths','floor','available','received','contact','phone','line','source','status','link','notes']) {
         clean[key] = String(item[key] ?? '');
       }
       clean.photos = (Array.isArray(item.photos) ? item.photos : []).filter(p => typeof p === 'string' && /^data:image\/(png|jpeg|webp|gif);base64,[a-zA-Z0-9+/=]+$/.test(p));
