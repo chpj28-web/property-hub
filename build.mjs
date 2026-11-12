@@ -1,7 +1,9 @@
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 
-const url = process.env.SUPABASE_URL;
-const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+// Public browser configuration; environment variables can override these defaults.
+// Database permissions are enforced by Supabase Auth and row level security.
+const url = process.env.SUPABASE_URL || 'https://wvyyuwtchjiqyoamgkyc.supabase.co';
+const key = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_05jj5Hr16rRh4O0lw2-POA_amKs181c';
 if (!url || !key) throw new Error('Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY in Vercel.');
 if (!url.startsWith('https://')) throw new Error('SUPABASE_URL must use HTTPS.');
 if (key.startsWith('sb_secret_')) throw new Error('Use a publishable key, never a secret key.');
