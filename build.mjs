@@ -12,5 +12,5 @@ if (key.split('.').length === 3) {
   if (payload.role !== 'anon') throw new Error('Use the anon key, never service_role.');
 }
 await mkdir('dist', { recursive: true });
-for (const file of ['index.html', 'cloud.js']) await copyFile(file, `dist/${file}`);
+for (const file of ['index.html', 'cloud.js', 'match.js']) await copyFile(file, `dist/${file}`);
 await writeFile('dist/config.js', `window.PROPERTY_HUB_CONFIG = ${JSON.stringify({ url, key })};\n`);
